@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CineVault — Collect Your Favorite Shows &amp; Movies</title>
+<meta name="description" content="CineVault lets you search TV shows and movies, build a personal favorites grid, and get in touch with the eBEYONDS team.">
+<link rel="icon" href="assets/img/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
+
+<!-- ===================== HEADER ===================== -->
+<header class="site-header" id="top">
+  <div class="container header-inner">
+    <a href="#top" class="logo" aria-label="CineVault home">
+      <img src="assets/img/logo.svg" alt="" width="140" height="32">
+    </a>
+
+    <nav class="main-nav" id="main-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#favorites">Collect Favorites</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-actions">
+      <button type="button" id="rtlToggle" class="rtl-toggle" aria-pressed="false">
+        <span aria-hidden="true">🌐</span> RTL Preview
+      </button>
+      <button type="button" class="hamburger" id="hamburgerBtn" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="nav-overlay" id="navOverlay" hidden></div>
+
+<main id="main-content">
+
+  <!-- ===================== MAIN VISUAL ===================== -->
+  <section class="hero" id="home" aria-roledescription="carousel" aria-label="Featured highlights">
+    <div class="hero-slides" id="heroSlides">
+      <div class="hero-slide is-active" style="background-image:url('assets/img/hero-1.svg')"></div>
+      <div class="hero-slide" style="background-image:url('assets/img/hero-2.svg')"></div>
+      <div class="hero-slide" style="background-image:url('assets/img/hero-3.svg')"></div>
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="container hero-content reveal">
+      <p class="eyebrow">eBEYONDS · Interview Evaluation Build</p>
+      <h1>Every great story, one collection away.</h1>
+      <p class="hero-sub">Search thousands of TV shows, build your own favorites grid, and keep track of what to watch next.</p>
+      <a href="#favorites" class="btn btn-primary">Start Collecting</a>
+    </div>
+    <div class="hero-dots" id="heroDots" role="tablist" aria-label="Slide picker"></div>
+  </section>
+
+  <!-- ===================== SITE INTRODUCTION ===================== -->
+  <section class="intro" id="about" aria-labelledby="introTitle">
+    <div class="container intro-grid">
+      <div class="reveal">
+        <p class="eyebrow">About CineVault</p>
+        <h2 id="introTitle">A tidy home for everything you love to watch</h2>
+        <p>CineVault was built as a compact demo for the eBEYONDS web developer evaluation. It combines a
+          hand-built responsive front end with a live TV/movie search connected to the
+          <a href="https://www.tvmaze.com/api" target="_blank" rel="noopener">TVMaze API</a>, plus a small PHP
+          backend that validates and stores contact requests and sends confirmation email.</p>
+        <ul class="intro-points">
+          <li>Responsive across mobile, tablet and desktop</li>
+          <li>Accessible, keyboard-friendly navigation</li>
+          <li>Live search with an editable favorites grid</li>
+        </ul>
+      </div>
+      <div class="intro-stats reveal">
+        <div class="stat-card"><strong>4.8★</strong><span>Average pick rating</span></div>
+        <div class="stat-card"><strong>10k+</strong><span>Shows searchable</span></div>
+        <div class="stat-card"><strong>&lt;12h</strong><span>Build time budget</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== COLLECT YOUR FAVORITES ===================== -->
+  <section class="favorites" id="favorites" aria-labelledby="favoritesTitle">
+    <div class="container">
+      <div class="section-heading reveal">
+        <p class="eyebrow">Collect your favorites</p>
+        <h2 id="favoritesTitle">Search a show and add it to your grid</h2>
+        <p>Results are fetched live from TVMaze. Add anything you like — remove it any time.</p>
+      </div>
+
+      <form class="search-bar reveal" id="searchForm" role="search">
+        <label for="movieSearch" class="visually-hidden">Search for a TV show or movie</label>
+        <input type="search" id="movieSearch" name="q" placeholder="Try “Breaking”, “Office”, “Fringe”…" autocomplete="off">
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+
+      <div class="search-results" id="searchResults" aria-live="polite"></div>
+
+      <h3 class="grid-subheading reveal">Your collection</h3>
+      <div class="favorites-grid" id="favoritesGrid">
+        <!-- Three static items (required) -->
+        <article class="fav-card reveal" data-static="true">
+          <img src="assets/img/fav-1.svg" alt="Poster art for The Silent Horizon" loading="lazy">
+          <div class="fav-card-body">
+            <h4>The Silent Horizon</h4>
+            <p>A slow-burn mystery drama about a coastal town keeping one very old secret.</p>
+          </div>
+        </article>
+        <article class="fav-card reveal" data-static="true">
+          <img src="assets/img/fav-2.svg" alt="Poster art for Midnight Runner" loading="lazy">
+          <div class="fav-card-body">
+            <h4>Midnight Runner</h4>
+            <p>A neon-lit action thriller following a courier who knows too many people's secrets.</p>
+          </div>
+        </article>
+        <article class="fav-card reveal" data-static="true">
+          <img src="assets/img/fav-3.svg" alt="Poster art for Eclipse of Dawn" loading="lazy">
+          <div class="fav-card-body">
+            <h4>Eclipse of Dawn</h4>
+            <p>A hopeful sci-fi series about the last research station to see the sun rise.</p>
+          </div>
+        </article>
+        <!-- Dynamic items fetched from the API are appended here by js/favorites.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== CONTACT US ===================== -->
+  <section class="contact" id="contact" aria-labelledby="contactTitle">
+    <div class="container contact-grid">
+      <div class="reveal">
+        <p class="eyebrow">Contact us</p>
+        <h2 id="contactTitle">Questions about the evaluation?</h2>
+        <p>Send a note and we'll get back to you. Fields marked <span class="required">*</span> are required.</p>
+
+        <form id="contactForm" class="contact-form" action="php/contact.php" method="POST" novalidate>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="firstName">First name <span class="required">*</span></label>
+              <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+              <span class="field-error" id="err-firstName"></span>
+            </div>
+            <div class="form-field">
+              <label for="lastName">Last name <span class="required">*</span></label>
+              <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+              <span class="field-error" id="err-lastName"></span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="email">Email <span class="required">*</span></label>
+              <input type="email" id="email" name="email" required autocomplete="email">
+              <span class="field-error" id="err-email"></span>
+            </div>
+            <div class="form-field">
+              <label for="phone">Phone number</label>
+              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Optional">
+              <span class="field-error" id="err-phone"></span>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="comments">Comments <span class="required">*</span></label>
+            <textarea id="comments" name="comments" rows="5" required></textarea>
+            <span class="field-error" id="err-comments"></span>
+          </div>
+
+          <!-- Honeypot field for basic spam protection; kept empty and hidden from real users -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="contactSubmit">Submit</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+
+      <div class="map-wrap reveal">
+        <iframe
+          title="eBEYONDS location on Google Maps"
+          src="https://www.google.com/maps?q=eBEYONDS,Sri+Lanka&output=embed"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <p class="map-caption">
+          <a href="https://goo.gl/maps/nZ8hGQzFmciK9P9k9" target="_blank" rel="noopener">Open eBEYONDS location in Google Maps ↗</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <a href="#top" class="logo logo-footer" aria-label="CineVault home">
+      <img src="assets/img/logo.svg" alt="" width="120" height="28">
+    </a>
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#favorites">Collect Favorites</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </nav>
+    <p class="footer-note">Built for the eBEYONDS Web Developer interview evaluation. TV/movie data courtesy of
+      <a href="https://www.tvmaze.com/api" target="_blank" rel="noopener">TVMaze</a>.</p>
+    <p class="footer-copy">&copy; <span id="year"></span> CineVault Demo. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="js/nav.js" defer></script>
+<script src="js/hero-slider.js" defer></script>
+<script src="js/reveal-animations.js" defer></script>
+<script src="js/favorites.js" defer></script>
+<script src="js/contact-form.js" defer></script>
+<script src="js/rtl-toggle.js" defer></script>
+<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
