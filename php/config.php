@@ -18,13 +18,13 @@ $config = [
     'from_name'    => 'CineVault (eBEYONDS Evaluation)',
 
     // Overwritten by config.local.php once you create it (see above).
-    'from_email'       => 'CHANGE_ME@gmail.com',
-    'admin_emails'     => ['CHANGE_ME@gmail.com'],
+    'from_email'       => 'photophile12345@gmail.com',
+    'admin_emails'     => ['mbhagyasalgado@gmail.com'],
     'smtp_host'        => 'smtp.gmail.com',
     'smtp_port'        => 587,
     'smtp_secure'      => 'tls', // 'tls' (STARTTLS, port 587) or 'ssl' (port 465)
-    'smtp_username'    => 'CHANGE_ME@gmail.com',
-    'smtp_password'    => 'CHANGE_ME_APP_PASSWORD',
+    'smtp_username'    => 'CineVault',
+    'smtp_password'    => 'ulpa qqjy jtir yejs',
     // Set to false to fall back to PHP's built-in mail() instead of SMTP
     // (useful if you haven't set up config.local.php yet, but most local
     // Windows/Mac setups have no mail server, so nothing will actually send).
