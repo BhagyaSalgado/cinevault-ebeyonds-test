@@ -14,5 +14,5 @@
 <circle cx="20" cy="34" r="2.4" fill="#0b0b12"/>
 <circle cx="11" cy="29" r="2.4" fill="#0b0b12"/>
 <circle cx="11" cy="19" r="2.4" fill="#0b0b12"/>
-<text x="46" y="31" font-family="'Poppins','Segoe UI',sans-serif" font-size="22" font-weight="700" fill="currentColor">Cine<tspan fill="#ff5f6d">Vault</tspan></text>
+<text x="46" y="31" font-family="'Poppins','Segoe UI',sans-serif" font-size="22" font-weight="700" fill="#ffffff">Cine<tspan fill="#ff5f6d">Vault</tspan></text>
 </svg>
