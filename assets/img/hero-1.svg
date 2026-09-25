@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#1b0f33"/>
+    <stop offset="1" stop-color="#5b1e42"/>
+  </linearGradient>
+</defs>
+<rect width="1600" height="700" fill="url(#bg)"/>
+<circle cx="275" cy="582" r="36" fill="#ffffff" opacity="0.06"/>
+<circle cx="1014" cy="460" r="140" fill="#ffffff" opacity="0.1"/>
+<circle cx="429" cy="96" r="144" fill="#ffffff" opacity="0.03"/>
+<circle cx="798" cy="443" r="20" fill="#ffffff" opacity="0.11"/>
+<circle cx="545" cy="234" r="46" fill="#ffffff" opacity="0.13"/>
+<circle cx="62" cy="22" r="26" fill="#ffffff" opacity="0.1"/>
+<circle cx="18" cy="390" r="75" fill="#ffffff" opacity="0.14"/>
+<circle cx="1486" cy="29" r="155" fill="#ffffff" opacity="0.05"/>
+<circle cx="896" cy="507" r="79" fill="#ffffff" opacity="0.07"/>
+<circle cx="1386" cy="224" r="137" fill="#ffffff" opacity="0.13"/>
+<circle cx="44" cy="426" r="45" fill="#ffffff" opacity="0.05"/>
+<circle cx="1482" cy="303" r="50" fill="#ffffff" opacity="0.11"/>
+<circle cx="1477" cy="512" r="128" fill="#ffffff" opacity="0.09"/>
+<circle cx="1372" cy="194" r="97" fill="#ffffff" opacity="0.06"/>
+
+<rect x="0.0" y="513" width="33.3" height="187" fill="#000000" opacity="0.07"/>
+<rect x="66.7" y="511" width="33.3" height="189" fill="#000000" opacity="0.07"/>
+<rect x="133.3" y="540" width="33.3" height="160" fill="#000000" opacity="0.07"/>
+<rect x="200.0" y="490" width="33.3" height="210" fill="#000000" opacity="0.07"/>
+<rect x="266.7" y="632" width="33.3" height="68" fill="#000000" opacity="0.07"/>
+<rect x="333.3" y="518" width="33.3" height="182" fill="#000000" opacity="0.07"/>
+<rect x="400.0" y="578" width="33.3" height="122" fill="#000000" opacity="0.07"/>
+<rect x="466.7" y="537" width="33.3" height="163" fill="#000000" opacity="0.07"/>
+<rect x="533.3" y="534" width="33.3" height="166" fill="#000000" opacity="0.07"/>
+<rect x="600.0" y="596" width="33.3" height="104" fill="#000000" opacity="0.07"/>
+<rect x="666.7" y="547" width="33.3" height="153" fill="#000000" opacity="0.07"/>
+<rect x="733.3" y="500" width="33.3" height="200" fill="#000000" opacity="0.07"/>
+<rect x="800.0" y="545" width="33.3" height="155" fill="#000000" opacity="0.07"/>
+<rect x="866.7" y="618" width="33.3" height="82" fill="#000000" opacity="0.07"/>
+<rect x="933.3" y="528" width="33.3" height="172" fill="#000000" opacity="0.07"/>
+<rect x="1000.0" y="510" width="33.3" height="190" fill="#000000" opacity="0.07"/>
+<rect x="1066.7" y="613" width="33.3" height="87" fill="#000000" opacity="0.07"/>
+<rect x="1133.3" y="599" width="33.3" height="101" fill="#000000" opacity="0.07"/>
+<rect x="1200.0" y="507" width="33.3" height="193" fill="#000000" opacity="0.07"/>
+<rect x="1266.7" y="540" width="33.3" height="160" fill="#000000" opacity="0.07"/>
+<rect x="1333.3" y="546" width="33.3" height="154" fill="#000000" opacity="0.07"/>
+<rect x="1400.0" y="515" width="33.3" height="185" fill="#000000" opacity="0.07"/>
+<rect x="1466.7" y="633" width="33.3" height="67" fill="#000000" opacity="0.07"/>
+<rect x="1533.3" y="520" width="33.3" height="180" fill="#000000" opacity="0.07"/>
+
+</svg>
