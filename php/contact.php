@@ -175,8 +175,12 @@ function saveSubmission(string $path, array $submission, string $logFile): bool
  * is true and credentials are filled in; otherwise falls back to PHP's
  * built-in mail() (which needs a configured MTA to actually deliver
  * anything — fine as a no-op fallback during local dev).
+ *
+ * $htmlBody is the rich version; $textBody is a plain-text fallback shown
+ * by clients that don't render HTML (and used outright by the mail()
+ * fallback path, which sends plain text only).
  */
-function dispatchMail(array $config, array $to, string $subject, string $body, ?string $replyTo = null): bool
+function dispatchMail(array $config, array $to, string $subject, string $htmlBody, string $textBody, ?string $replyTo = null): bool
 {
     $subject = str_replace(["\r", "\n"], '', $subject);
 
@@ -208,8 +212,9 @@ function dispatchMail(array $config, array $to, string $subject, string $body, ?
             }
 
             $mail->Subject = $subject;
-            $mail->Body    = $body;
-            $mail->isHTML(false);
+            $mail->isHTML(true);
+            $mail->Body    = $htmlBody;
+            $mail->AltBody = $textBody;
 
             return $mail->send();
         } catch (PHPMailerException $e) {
@@ -217,7 +222,8 @@ function dispatchMail(array $config, array $to, string $subject, string $body, ?
         }
     }
 
-    // Fallback: native mail() — only works if the host has a configured MTA.
+    // Fallback: native mail(), plain text only — needs a configured MTA to
+    // actually deliver anything.
     $headers = [
         'MIME-Version: 1.0',
         'Content-Type: text/plain; charset=UTF-8',
@@ -227,30 +233,125 @@ function dispatchMail(array $config, array $to, string $subject, string $body, ?
         $headers[] = 'Reply-To: ' . $replyTo;
     }
 
-    return @mail(implode(',', $to), $subject, $body, implode("\r\n", $headers));
+    return @mail(implode(',', $to), $subject, $textBody, implode("\r\n", $headers));
+}
+
+/**
+ * Wraps a block of HTML content in a simple, email-client-safe letterhead
+ * (inline styles only — most mail clients strip <style> blocks and external
+ * CSS). Kept deliberately plain: no external images, no web fonts.
+ */
+function emailShell(array $config, string $innerHtml): string
+{
+    $siteName = htmlspecialchars($config['site_name'], ENT_QUOTES, 'UTF-8');
+    $year = date('Y');
+
+    return <<<HTML
+<!DOCTYPE html>
+<html>
+<body style="margin:0; padding:0; background:#0F0F0F; font-family:Arial, Helvetica, sans-serif;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0F0F0F; padding:32px 0;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background:#1A1A1A; border-radius:8px; overflow:hidden;">
+          <tr>
+            <td style="background:#141414; padding:24px 32px; border-bottom:3px solid #D4A62A;">
+              <span style="color:#FFFFFF; font-size:20px; font-weight:bold; letter-spacing:.03em;">{$siteName}</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px; color:#E6E6E6; font-size:15px; line-height:1.6;">
+              {$innerHtml}
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 32px; background:#141414; color:#8A8A8A; font-size:12px;">
+              &copy; {$year} {$siteName}. This is an automated message from the eBEYONDS Web Developer evaluation build — please do not reply.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+HTML;
 }
 
 function sendAutoResponse(array $config, array $s): bool
 {
-    $subject = 'We received your message — ' . $config['site_name'];
-    $body = "Hi {$s['firstName']},\n\n"
-        . "Thanks for reaching out to {$config['site_name']}! This confirms we received your message:\n\n"
-        . "\"{$s['comments']}\"\n\n"
-        . "We (or the eBEYONDS team) will get back to you shortly.\n\n"
-        . "— {$config['site_name']}\n";
+    $subject = 'We\'ve received your message — ' . $config['site_name'];
 
-    return dispatchMail($config, [$s['email']], $subject, $body);
+    $firstName = htmlspecialchars($s['firstName'], ENT_QUOTES, 'UTF-8');
+    $comments  = nl2br(htmlspecialchars($s['comments'], ENT_QUOTES, 'UTF-8'));
+    $siteName  = htmlspecialchars($config['site_name'], ENT_QUOTES, 'UTF-8');
+
+    $inner = <<<HTML
+<p style="margin:0 0 16px;">Hi {$firstName},</p>
+<p style="margin:0 0 16px;">Thank you for getting in touch with {$siteName}. This email confirms that we've received your message and a member of our team will review it shortly.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0F0F0F; border-radius:6px; margin:0 0 20px;">
+  <tr>
+    <td style="padding:16px 20px; color:#B7B7B7; font-size:14px; font-style:italic; border-inline-start:3px solid #D4A62A;">
+      &ldquo;{$comments}&rdquo;
+    </td>
+  </tr>
+</table>
+<p style="margin:0 0 16px;">If your enquiry is urgent, feel free to reply directly to this email.</p>
+<p style="margin:0;">Kind regards,<br>The {$siteName} Team</p>
+HTML;
+
+    $text = "Hi {$s['firstName']},\n\n"
+        . "Thank you for getting in touch with {$config['site_name']}. This email confirms that we've received your message and a member of our team will review it shortly.\n\n"
+        . "Your message:\n\"{$s['comments']}\"\n\n"
+        . "If your enquiry is urgent, feel free to reply directly to this email.\n\n"
+        . "Kind regards,\nThe {$config['site_name']} Team\n";
+
+    return dispatchMail($config, [$s['email']], $subject, emailShell($config, $inner), $text);
 }
 
 function sendAdminNotification(array $config, array $s): bool
 {
-    $subject = 'New contact form submission — ' . $config['site_name'];
-    $body = "A new contact form submission was received.\n\n"
+    $subject = 'New contact form submission from ' . $s['firstName'] . ' ' . $s['lastName'];
+
+    $fullName = htmlspecialchars($s['firstName'] . ' ' . $s['lastName'], ENT_QUOTES, 'UTF-8');
+    $email    = htmlspecialchars($s['email'], ENT_QUOTES, 'UTF-8');
+    $phone    = htmlspecialchars($s['phone'] !== '' ? $s['phone'] : 'Not provided', ENT_QUOTES, 'UTF-8');
+    $comments = nl2br(htmlspecialchars($s['comments'], ENT_QUOTES, 'UTF-8'));
+    $submittedAt = htmlspecialchars($s['submittedAt'], ENT_QUOTES, 'UTF-8');
+
+    $row = static function (string $label, string $value): string {
+        return <<<HTML
+<tr>
+  <td style="padding:8px 0; color:#8A8A8A; font-size:13px; text-transform:uppercase; letter-spacing:.04em; width:120px; vertical-align:top;">{$label}</td>
+  <td style="padding:8px 0; color:#FFFFFF; font-size:14px;">{$value}</td>
+</tr>
+HTML;
+    };
+
+    $inner = <<<HTML
+<p style="margin:0 0 20px;">A new contact form submission was received on {$config['site_name']}.</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px;">
+  {$row('Name', $fullName)}
+  {$row('Email', $email)}
+  {$row('Phone', $phone)}
+  {$row('Submitted', $submittedAt)}
+</table>
+<p style="margin:0 0 8px; color:#8A8A8A; font-size:13px; text-transform:uppercase; letter-spacing:.04em;">Message</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0F0F0F; border-radius:6px;">
+  <tr>
+    <td style="padding:16px 20px; color:#E6E6E6; font-size:14px; border-inline-start:3px solid #D4A62A;">
+      {$comments}
+    </td>
+  </tr>
+</table>
+HTML;
+
+    $text = "A new contact form submission was received.\n\n"
         . "Name:      {$s['firstName']} {$s['lastName']}\n"
         . "Email:     {$s['email']}\n"
-        . "Phone:     " . ($s['phone'] !== '' ? $s['phone'] : '—') . "\n"
+        . "Phone:     " . ($s['phone'] !== '' ? $s['phone'] : 'Not provided') . "\n"
         . "Submitted: {$s['submittedAt']}\n\n"
-        . "Comments:\n{$s['comments']}\n";
+        . "Message:\n{$s['comments']}\n";
 
-    return dispatchMail($config, $config['admin_emails'], $subject, $body, $s['email']);
+    return dispatchMail($config, $config['admin_emails'], $subject, emailShell($config, $inner), $text, $s['email']);
 }
