@@ -16,5 +16,14 @@
         "phone": "0711631820",
         "comments": "Hello! Test 02.",
         "submittedAt": "2026-09-25T11:53:58+00:00"
+    },
+    {
+        "id": "870e799aaeb11dc9",
+        "firstName": "Bhagya",
+        "lastName": "Salgado",
+        "email": "mbhagyasalgadov2@gmail.com",
+        "phone": "0711631820",
+        "comments": "Hi, this is a test submission for the CineVault web developer evaluation. I'm verifying that the contact form's validation, storage, and email notifications (auto-response and admin alert) work correctly end-to-end in the local environment before final submission. Thanks for reviewing my work!",
+        "submittedAt": "2026-09-25T12:54:25+00:00"
     }
 ]
