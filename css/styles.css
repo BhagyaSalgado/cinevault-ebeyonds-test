@@ -28,7 +28,7 @@
 
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
 body {
   margin: 0;
   background: var(--color-bg);
@@ -36,6 +36,10 @@ body {
   font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden; /* the off-canvas mobile nav drawer sits translated past the
+    viewport edge (see .main-nav below); without this, that off-screen box still
+    widens the page's scrollable area and causes horizontal scroll on mobile/tablet */
+  width: 100%;
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
@@ -493,14 +497,79 @@ textarea:focus-visible {
 .site-footer {
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
-  padding: 48px 0 28px;
+  padding: 56px 0 0;
 }
-.footer-inner { display: grid; gap: 18px; justify-items: start; text-align: start; }
-.footer-inner nav ul { display: flex; flex-wrap: wrap; gap: 18px; }
-.footer-inner nav a { text-decoration: none; color: var(--color-text-dim); font-size: .92rem; }
-.footer-inner nav a:hover { color: var(--color-text); }
-.footer-note, .footer-copy, .footer-credit { color: var(--color-text-dim); font-size: .82rem; margin: 0; }
-.footer-note a, .footer-credit a { color: var(--color-accent); text-decoration: none; }
+
+.footer-grid {
+  display: grid;
+  gap: 36px;
+  grid-template-columns: 1fr;
+  padding-bottom: 40px;
+}
+@media (min-width: 640px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+}
+@media (min-width: 980px) {
+  .footer-grid { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; }
+}
+
+.footer-col h5 {
+  font-family: var(--font-heading);
+  font-size: .85rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--color-text);
+  margin: 0 0 16px;
+}
+.footer-col ul { display: grid; gap: 10px; }
+.footer-col a {
+  text-decoration: none;
+  color: var(--color-text-dim);
+  font-size: .92rem;
+  transition: color .15s ease;
+}
+.footer-col a:hover { color: var(--color-text); }
+
+.footer-brand .logo { display: inline-flex; margin-bottom: 14px; }
+.footer-brand p {
+  color: var(--color-text-dim);
+  font-size: .88rem;
+  max-width: 34ch;
+  margin: 0 0 18px;
+}
+.footer-social { display: flex; gap: 10px; }
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-dim);
+}
+.footer-social a:hover { color: var(--color-text); border-color: var(--color-accent); }
+
+.footer-contact address {
+  font-style: normal;
+  color: var(--color-text-dim);
+  font-size: .9rem;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+.footer-map-link { color: var(--color-accent) !important; font-weight: 600; font-size: .88rem !important; }
+
+.footer-bottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-border);
+}
+.footer-copy, .footer-credit { color: var(--color-text-dim); font-size: .82rem; margin: 0; }
+.footer-credit a { color: var(--color-accent); text-decoration: none; }
+.footer-credit a:hover { text-decoration: underline; }
 .footer-note a:hover, .footer-credit a:hover { text-decoration: underline; }
 
 /* ---------- scroll reveal ---------- */
