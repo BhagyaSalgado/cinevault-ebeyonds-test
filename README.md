@@ -1,5 +1,8 @@
 # CineVault — eBEYONDS Web Developer Interview Evaluation
 
+**Developed by [Bhagya Salgado](https://bhagya-salgado.vercel.app)** ·
+[GitHub](https://github.com/BhagyaSalgado)
+
 A responsive HTML5/CSS/JS site with a live TV/movie search (TVMaze API) and a
 small PHP backend for the contact form, built against the brief in
 *Test instructions – advance.pdf*.

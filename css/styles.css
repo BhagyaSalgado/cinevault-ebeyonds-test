@@ -499,8 +499,9 @@ textarea:focus-visible {
 .footer-inner nav ul { display: flex; flex-wrap: wrap; gap: 18px; }
 .footer-inner nav a { text-decoration: none; color: var(--color-text-dim); font-size: .92rem; }
 .footer-inner nav a:hover { color: var(--color-text); }
-.footer-note, .footer-copy { color: var(--color-text-dim); font-size: .82rem; margin: 0; }
-.footer-note a { color: var(--color-accent); }
+.footer-note, .footer-copy, .footer-credit { color: var(--color-text-dim); font-size: .82rem; margin: 0; }
+.footer-note a, .footer-credit a { color: var(--color-accent); text-decoration: none; }
+.footer-note a:hover, .footer-credit a:hover { text-decoration: underline; }
 
 /* ---------- scroll reveal ---------- */
 .reveal {
