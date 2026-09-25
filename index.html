@@ -106,29 +106,9 @@
 
       <h3 class="grid-subheading reveal">Your collection</h3>
       <div class="favorites-grid" id="favoritesGrid">
-        <!-- Three static items (required) -->
-        <article class="fav-card reveal" data-static="true">
-          <img src="assets/img/fav-1.svg" alt="Poster art for The Silent Horizon" loading="lazy">
-          <div class="fav-card-body">
-            <h4>The Silent Horizon</h4>
-            <p>A slow-burn mystery drama about a coastal town keeping one very old secret.</p>
-          </div>
-        </article>
-        <article class="fav-card reveal" data-static="true">
-          <img src="assets/img/fav-2.svg" alt="Poster art for Midnight Runner" loading="lazy">
-          <div class="fav-card-body">
-            <h4>Midnight Runner</h4>
-            <p>A neon-lit action thriller following a courier who knows too many people's secrets.</p>
-          </div>
-        </article>
-        <article class="fav-card reveal" data-static="true">
-          <img src="assets/img/fav-3.svg" alt="Poster art for Eclipse of Dawn" loading="lazy">
-          <div class="fav-card-body">
-            <h4>Eclipse of Dawn</h4>
-            <p>A hopeful sci-fi series about the last research station to see the sun rise.</p>
-          </div>
-        </article>
-        <!-- Dynamic items fetched from the API are appended here by js/favorites.js -->
+        <!-- Populated by js/favorites.js: 3 default shows fetched live from
+             TVMaze on page load (real poster art/description straight from
+             the API), plus anything the visitor adds via search. -->
       </div>
     </div>
   </section>
