@@ -100,6 +100,19 @@ Then open `http://localhost:8080/`. The search box and grid work immediately
 and saves to `data/submissions.json` locally, and will send real emails
 once `php/config.local.php` is set up as described above.
 
+## Deployment
+
+Deployed via Docker on [Render](https://render.com) (free tier) — see the
+`Dockerfile`. Vercel and GitHub Pages don't run PHP, so they can only host
+the static front end, without a working contact form.
+
+Steps: push `Dockerfile` + `.dockerignore` to GitHub → create a Render Web
+Service from the repo → add `php/config.local.php` as a **Secret File**
+(Environment tab) with your Gmail credentials → deploy.
+
+Note: the free tier has no persistent disk, so `data/submissions.json`
+resets on restart/redeploy — email sending still works fine either way.
+
 ## Project structure
 
 ```
