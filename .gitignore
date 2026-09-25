@@ -1,0 +1,14 @@
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Runtime data (keep the folder + starter submissions.json, ignore what accumulates locally)
+data/contact-errors.log
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# Environment / local overrides
+.env
+php/config.local.php
