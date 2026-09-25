@@ -12,6 +12,13 @@
   let debounceTimer = null;
   let activeController = null;
 
+  // The three "default" favorites shown on page load — real TVMaze show ids
+  // for well-known titles, fetched live just like a search result so the
+  // poster art/description always comes straight from the API (no bundled
+  // copyrighted images). Swap these ids for any other TVMaze show to change
+  // the defaults: look the id up via https://api.tvmaze.com/singlesearch/shows?q=<title>
+  const DEFAULT_SHOW_IDS = [169, 2993, 82]; // Breaking Bad, Stranger Things, Game of Thrones
+
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -110,6 +117,39 @@
       resultsWrap.innerHTML = '<p class="search-status">Couldn’t reach TVMaze right now. Please try again.</p>';
     }
   }
+
+  async function loadDefaultFavorites() {
+    const status = document.createElement('p');
+    status.className = 'search-status';
+    status.id = 'defaultsStatus';
+    status.textContent = 'Loading your collection…';
+    grid.appendChild(status);
+
+    const results = await Promise.allSettled(
+      DEFAULT_SHOW_IDS.map((id) => fetch(`https://api.tvmaze.com/shows/${id}`).then((res) => {
+        if (!res.ok) throw new Error(`TVMaze responded ${res.status}`);
+        return res.json();
+      }))
+    );
+
+    status.remove();
+    results.forEach((result) => {
+      if (result.status !== 'fulfilled') return; // skip any show that failed to load, rather than breaking the whole grid
+      const show = result.value;
+      if (addedIds.has(show.id)) return;
+      addedIds.add(show.id);
+      grid.appendChild(buildCard(show));
+    });
+
+    if (results.every((r) => r.status === 'rejected')) {
+      const failed = document.createElement('p');
+      failed.className = 'search-status';
+      failed.textContent = 'Couldn’t load the default collection — check your connection and refresh.';
+      grid.appendChild(failed);
+    }
+  }
+
+  loadDefaultFavorites();
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
