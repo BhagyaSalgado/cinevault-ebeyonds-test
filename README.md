@@ -44,12 +44,6 @@ top) and `assets/img/` if you'd like a closer match.
 - Accessibility: skip link, visible focus states, `aria-*` wiring on the
   menu/search/form, labelled fields, `prefers-reduced-motion` support
 
-**Not implemented (by design, to stay inside the time budget)**
-- Vue.js — the brief marks this optional; vanilla JS keeps the evaluation
-  dependency-free and easy to read
-- Full WCAG AA audit — the accessibility basics above are in place, but a
-  full AA pass (contrast audit tooling, screen-reader pass) wasn't run
-
 **Backend**
 - `php/contact.php` re-validates every field server-side, stores each
   submission as a record in `data/submissions.json` (file-locked, so
