@@ -1,0 +1,6 @@
+.git
+.gitignore
+README.md
+scripts/
+php/config.local.php
+php/config.local.php.example
