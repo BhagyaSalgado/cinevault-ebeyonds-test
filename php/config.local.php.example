@@ -1,0 +1,23 @@
+<?php
+/**
+ * Copy this file to "config.local.php" (same folder) and fill in your own
+ * values below. config.local.php is git-ignored, so your real address and
+ * App Password never get committed or pushed to GitHub.
+ *
+ * How to get a Gmail App Password (takes ~2 minutes):
+ *   1. Turn on 2-Step Verification on your Google account, if it isn't
+ *      already: https://myaccount.google.com/signinoptions/two-step-verification
+ *   2. Go to https://myaccount.google.com/apppasswords
+ *   3. Under "App name", type something like "CineVault" and click Create
+ *   4. Google shows you a 16-character password (e.g. "abcd efgh ijkl mnop")
+ *      — copy it (spaces don't matter) and paste it below as smtp_password
+ *   5. This is NOT your normal Gmail password — it only works for this one
+ *      app, and you can revoke it any time from the same App Passwords page
+ */
+
+return [
+    'from_email'    => 'youraddress@gmail.com',
+    'admin_emails'  => ['youraddress@gmail.com'],
+    'smtp_username' => 'youraddress@gmail.com',
+    'smtp_password' => 'your16charapppassword',
+];
