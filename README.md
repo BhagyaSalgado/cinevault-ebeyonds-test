@@ -34,12 +34,12 @@ node:
 - **Imagery** — the file's own raster images (stock cinema photo, movie
   poster art) aren't reproduced here: the poster art is intentionally real,
   live TVMaze artwork rather than the file's copyrighted movie posters
-  (Batman, Spider-Man, etc.), and the hero banner is a procedurally
-  generated cinema-seat scene recolored to match the file's deep-red mood
-  instead of a copied stock photo — both to avoid licensing issues and
-  because this evaluation sandbox has no path to export files from Figma.
-  `scripts/gen_assets.py` regenerates all of it; no third-party or
-  copyrighted imagery is used anywhere in the project.
+  (Batman, Spider-Man, etc.), and the hero banner slideshow uses real
+  cinema-seat photos (`assets/img/hero-photo-1.jpg` through `-3.jpg`),
+  credited in the footer ("Photos by Felix Mooneeram & Serge Kutuzov on
+  Unsplash"). `scripts/gen_assets.py` can still regenerate the earlier
+  procedurally-generated placeholder art (`hero-1.svg`–`hero-3.svg`,
+  `fav-*.svg`, `logo.svg`) if real photos aren't available.
 
 A small addition beyond the Figma file: a **RTL Preview** toggle in the
 footer bottom bar (the file has no such control) demonstrates the

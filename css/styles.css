@@ -43,10 +43,14 @@ body {
   font-family: var(--font-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden; /* the off-canvas mobile nav drawer sits translated past the
-    viewport edge (see .main-nav below); without this, that off-screen box still
-    widens the page's scrollable area and causes horizontal scroll on mobile/tablet */
   width: 100%;
+  /* NOTE: deliberately no overflow-x here — the off-canvas mobile nav drawer
+     still needs clipping (see .main-nav below), but `overflow-x: hidden` on
+     body breaks `position: sticky` on .site-header in Chromium (body becomes
+     the nearest "scrolling" ancestor even though it never actually scrolls,
+     so the sticky math never fires). `html` below already has overflow-x:
+     hidden and isn't affected the same way, so it alone is enough to stop
+     the drawer widening the page. */
 }
 img { max-width: 100%; display: block; }
 a { color: inherit; }
@@ -153,11 +157,14 @@ textarea:focus-visible {
 .header-inner {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
 }
 .logo { display: inline-flex; color: var(--color-text); text-decoration: none; }
 .logo img { height: 32px; width: auto; }
+
+/* Nav sits flush against the hamburger/actions on the right, with the logo
+   pinned to the far left — not centered in the middle of the header. */
+.main-nav { margin-inline-start: auto; }
 
 .main-nav ul {
   display: flex;
@@ -165,6 +172,8 @@ textarea:focus-visible {
 }
 .main-nav a {
   text-decoration: none;
+  text-underline-offset: 6px;
+  text-decoration-thickness: 1.5px;
   text-transform: uppercase;
   font-family: var(--font-ui);
   font-weight: 500;
@@ -174,6 +183,7 @@ textarea:focus-visible {
   transition: opacity .15s ease;
 }
 .main-nav a:hover { opacity: .75; }
+.main-nav a.is-active { text-decoration: underline; }
 
 .header-actions {
   display: flex;
@@ -305,7 +315,7 @@ textarea:focus-visible {
    66px vertical padding — single column, left aligned, no card/stat grid
    (the file doesn't have one). */
 .intro { padding: 66px 0; background: var(--color-bg); }
-.intro-inner { max-width: 760px; margin-inline: 0; }
+.intro-inner { max-width: 760px; }
 .intro h1 { font-size: clamp(2rem, 4.2vw, 54.86px); margin-bottom: .45em; text-transform: uppercase; }
 .intro p {
   font-family: var(--font-body);
@@ -340,9 +350,17 @@ textarea:focus-visible {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 .favorites-top h2 { font-size: clamp(1.5rem, 2.6vw, 36.57px); margin: 0; }
+
+/* Divider under the "Collect your favourites" heading + search bar,
+   separating it from the results/grid below. */
+.section-divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, .25);
+  margin: 0 0 28px;
+}
 
 .search-bar {
   position: relative;
@@ -567,6 +585,28 @@ html[dir="rtl"] .search-bar input { padding: 0 42px 0 16px; }
   margin-bottom: 18px;
 }
 
+.form-terms {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: 10px;
+  margin-bottom: 18px;
+}
+.form-terms input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--color-primary);
+  flex-shrink: 0;
+}
+.form-terms label {
+  font-family: var(--font-body);
+  font-size: .92rem;
+  color: var(--color-text-dim);
+}
+.form-terms a { color: var(--color-primary); text-decoration: underline; }
+.form-terms a:hover { color: var(--color-text); }
+.form-terms .field-error { flex-basis: 100%; margin-top: 2px; }
+
 .form-status {
   margin-top: 14px;
   font-family: var(--font-body);
@@ -583,7 +623,7 @@ html[dir="rtl"] .search-bar input { padding: 0 42px 0 16px; }
   overflow: hidden;
   background: var(--color-surface-alt);
   aspect-ratio: 773 / 588;
-  min-height: 300px;
+  width: 100%;
   display: flex;
 }
 .map-wrap iframe { width: 100%; height: 100%; border: 0; display: block; flex: 1; }
@@ -599,7 +639,7 @@ html[dir="rtl"] .search-bar input { padding: 0 42px 0 16px; }
    social icons), a 10px gap, then a bottom bar separated by a hairline
    border with copyright on one side and credits on the other. */
 .site-footer {
-  background: var(--color-void);
+  background: var(--color-surface);
   padding: 32px 0 0;
 }
 
@@ -668,8 +708,35 @@ html[dir="rtl"] .search-bar input { padding: 0 42px 0 16px; }
   font-size: .78rem;
   margin: 0;
 }
-.footer-credit a { color: var(--color-primary); text-decoration: none; }
-.footer-credit a:hover { text-decoration: underline; }
+.footer-credit a { color: inherit; text-decoration: underline; }
+.footer-credit a:hover { color: var(--color-text); }
+
+/* Mobile: whole footer becomes one centered column, with "Follow us on" and
+   the social icons on a single centered row instead of stacked. */
+@media (max-width: 640px) {
+  .footer-grid {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+  }
+  .footer-brand address { margin-bottom: 0; }
+  .footer-links { justify-content: center; }
+  .footer-follow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    text-align: start;
+  }
+  .footer-follow-label { margin: 0; }
+  .footer-social { justify-content: center; }
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+}
 
 /* ---------- scroll reveal ---------- */
 .reveal {
