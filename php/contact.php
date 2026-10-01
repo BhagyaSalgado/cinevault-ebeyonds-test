@@ -184,6 +184,12 @@ function dispatchMail(array $config, array $to, string $subject, string $htmlBod
 {
     $subject = str_replace(["\r", "\n"], '', $subject);
 
+    // Resend (HTTP API over port 443) takes priority when configured — see
+    // sendViaResend() for why this exists.
+    if (($config['mail_transport'] ?? 'smtp') === 'resend' && !empty($config['resend_api_key'])) {
+        return sendViaResend($config, $to, $subject, $htmlBody, $textBody, $replyTo);
+    }
+
     $useSmtp = !empty($config['use_smtp'])
         && !empty($config['smtp_username'])
         && $config['smtp_username'] !== 'CHANGE_ME@gmail.com'
@@ -237,6 +243,57 @@ function dispatchMail(array $config, array $to, string $subject, string $htmlBod
 }
 
 /**
+ * Sends via the Resend HTTP API (https://resend.com) instead of SMTP.
+ *
+ * Render's free tier (and many other free-tier PaaS hosts) blocks outbound
+ * traffic on the SMTP ports (25/465/587) entirely, so requests to Gmail's
+ * SMTP server just hang until PHPMailer's Timeout is hit and it reports
+ * failure — no amount of correct SMTP config fixes that, because the block
+ * is at the network level, not the credentials. Resend's API is a plain
+ * HTTPS POST to port 443, which isn't blocked, so this is the transport
+ * that actually delivers mail from a host like that.
+ */
+function sendViaResend(array $config, array $to, string $subject, string $htmlBody, string $textBody, ?string $replyTo): bool
+{
+    $payload = [
+        'from'    => sprintf('%s <%s>', $config['from_name'], $config['from_email']),
+        'to'      => array_values($to),
+        'subject' => $subject,
+        'html'    => $htmlBody,
+        'text'    => $textBody,
+    ];
+    if ($replyTo) {
+        $payload['reply_to'] = $replyTo;
+    }
+
+    $ch = curl_init('https://api.resend.com/emails');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST           => true,
+        CURLOPT_POSTFIELDS     => json_encode($payload),
+        CURLOPT_HTTPHEADER     => [
+            'Authorization: Bearer ' . $config['resend_api_key'],
+            'Content-Type: application/json',
+        ],
+        CURLOPT_TIMEOUT        => 10, // seconds — fail fast instead of hanging the request
+    ]);
+    $response  = curl_exec($ch);
+    $httpCode  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curlError = curl_error($ch);
+    curl_close($ch);
+
+    if ($response === false) {
+        logError($config['log_file'], 'Resend request failed: ' . $curlError);
+        return false;
+    }
+    if ($httpCode < 200 || $httpCode >= 300) {
+        logError($config['log_file'], "Resend API returned HTTP {$httpCode}: {$response}");
+        return false;
+    }
+    return true;
+}
+
+/**
  * Wraps a block of HTML content in a simple, email-client-safe letterhead
  * (inline styles only — most mail clients strip <style> blocks and external
  * CSS). Kept deliberately plain: no external images, no web fonts.
@@ -266,7 +323,7 @@ function emailShell(array $config, string $innerHtml): string
           </tr>
           <tr>
             <td style="padding:20px 32px; background:#141414; color:#8A8A8A; font-size:12px;">
-              &copy; {$year} {$siteName}. This is an automated message from the eBEYONDS Web Developer evaluation build — please do not reply.
+              &copy; {$year} {$siteName}. This is an automated message from the eBEYONDS Web Developer evaluation build — please do not reply if this looks unfamiliar.
             </td>
           </tr>
         </table>

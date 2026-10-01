@@ -13,6 +13,12 @@
  *      — copy it (spaces don't matter) and paste it below as smtp_password
  *   5. This is NOT your normal Gmail password — it only works for this one
  *      app, and you can revoke it any time from the same App Passwords page
+ *
+ * Deploying somewhere that blocks outbound SMTP (e.g. Render's free tier)?
+ * Gmail SMTP will hang and fail there no matter how correct these values
+ * are — see the "Resend" option below instead, which sends over plain
+ * HTTPS. You can leave the two lines commented out if you're only using
+ * Gmail SMTP locally.
  */
 
 return [
@@ -20,4 +26,10 @@ return [
     'admin_emails'  => ['youraddress@gmail.com'],
     'smtp_username' => 'youraddress@gmail.com',
     'smtp_password' => 'your16charapppassword',
+
+    // Uncomment to send via the Resend HTTP API instead of Gmail SMTP
+    // (needed on hosts that block outbound SMTP ports, e.g. Render free
+    // tier). Get a key at https://resend.com/api-keys.
+    // 'mail_transport' => 'resend',
+    // 'resend_api_key' => 're_your_api_key',
 ];

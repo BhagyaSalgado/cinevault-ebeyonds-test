@@ -9,16 +9,41 @@ small PHP backend for the contact form, built against the brief in
 
 ## A note on the Figma design
 
-The evaluation links to a private Figma file
-(`figma.com/file/6FDTiXOX7dvEmhk9dCJyym`) that requires being signed in with
-access granted to that specific file — it couldn't be opened from here, so
-the visual design below is an original layout built from the brief's written
-section list ("Header", "Main Visual", "Site Introduction", "Collect your
-favorites", "Contact Us", "Footer") rather than a pixel match to the Figma
-file. All artwork (logo, hero banners, poster art) is procedurally generated
-SVG (see `scripts/gen_assets.py`) so there are no licensing questions. Swap
-in the real design's assets/colors in `css/styles.css` (CSS variables at the
-top) and `assets/img/` if you'd like a closer match.
+The evaluation links to a private Figma file (`figma.com/file/6FDTiXOX7dvEmhk9dCJyym`).
+Dev Mode access was later granted, and the layout, colors, type scale and
+spacing below were rebuilt to match that file exactly, inspected node by
+node:
+
+- **Colors** — `#0F0F0F` (header / hero caption), `#1D1D1D` (favorites
+  section), `#3C3C3C` (card body / form fields), `#CC9601` (the file's one
+  accent color, used for every button), plus its exact text greys
+  (`#B7B7B7`, `#878787`, `#EAEAEA`). All defined as CSS variables at the top
+  of `css/styles.css`.
+- **Type** — the file's scale (54.86px / 36.57px / 32px / 20.57px / 18.29px /
+  16px, all at 150% line-height and ‑1.1% letter-spacing) using Oswald +
+  Open Sans + Inter. The file itself uses **DIN Alternate** for headings,
+  which isn't freely licensable for the web, so Oswald (a similarly
+  condensed, bold grotesque) stands in for it — swap the `--font-heading`
+  variable if a licensed copy of DIN Alternate is available.
+- **Layout** — the header's 115px side padding and 78px height, the
+  favourites section's heading+search row, the 427:606 poster cards with
+  their circular rating badge and `#3C3C3C` body panel, the hairline-bordered
+  contact form and its exact `242×49` gold submit button, and the footer's
+  actual two-part structure (address + social row, then a copyright bar)
+  all match the file's Dev Mode measurements.
+- **Imagery** — the file's own raster images (stock cinema photo, movie
+  poster art) aren't reproduced here: the poster art is intentionally real,
+  live TVMaze artwork rather than the file's copyrighted movie posters
+  (Batman, Spider-Man, etc.), and the hero banner is a procedurally
+  generated cinema-seat scene recolored to match the file's deep-red mood
+  instead of a copied stock photo — both to avoid licensing issues and
+  because this evaluation sandbox has no path to export files from Figma.
+  `scripts/gen_assets.py` regenerates all of it; no third-party or
+  copyrighted imagery is used anywhere in the project.
+
+A small addition beyond the Figma file: a **RTL Preview** toggle in the
+footer bottom bar (the file has no such control) demonstrates the
+layout's RTL support without changing anything in the matched design.
 
 ## What's implemented
 
@@ -43,6 +68,12 @@ top) and `assets/img/` if you'd like a closer match.
   properties (`margin-inline`, `inset-inline-start`, etc.) throughout
 - Accessibility: skip link, visible focus states, `aria-*` wiring on the
   menu/search/form, labelled fields, `prefers-reduced-motion` support
+
+**Not implemented (by design, to stay inside the time budget)**
+- Vue.js — the brief marks this optional; vanilla JS keeps the evaluation
+  dependency-free and easy to read
+- Full WCAG AA audit — the accessibility basics above are in place, but a
+  full AA pass (contrast audit tooling, screen-reader pass) wasn't run
 
 **Backend**
 - `php/contact.php` re-validates every field server-side, stores each
@@ -82,6 +113,41 @@ correctly but no email goes out until SMTP is configured.
 
 PHPMailer itself is vendored directly in `php/PHPMailer/` (just the three
 source files), so there's no Composer install step needed to run this.
+
+### Sending email on Render (Resend instead of SMTP)
+
+Render's free tier blocks all outbound traffic on the SMTP ports
+(25/465/587), so Gmail SMTP — correct credentials and all — just hangs and
+times out once deployed there; it isn't a config problem, the network path
+itself is closed. [Resend](https://resend.com) sends mail over a plain
+HTTPS API call (port 443) instead, which isn't blocked, so it's the
+transport that actually works on Render's free tier.
+
+1. Sign up at [resend.com](https://resend.com) (free tier is enough for
+   this evaluation) and create an API key at
+   [resend.com/api-keys](https://resend.com/api-keys).
+2. Without a verified domain, Resend's sandbox sender
+   (`onboarding@resend.dev`) can only deliver to the email address you
+   signed up with — fine for the auto-response/admin-notification pair
+   during testing. Verifying a domain (Resend walks you through adding a
+   couple of DNS records) lifts that restriction if you need to send to
+   arbitrary addresses.
+3. In Render's dashboard, open the service → **Environment** tab and set:
+   - `MAIL_TRANSPORT` = `resend`
+   - `RESEND_API_KEY` = the key from step 1
+   - `SMTP_FROM_EMAIL` = the sender address (`onboarding@resend.dev`
+     until a domain is verified)
+   - `ADMIN_EMAILS` = where the admin notification should land
+     (comma-separated if more than one)
+4. Save — Render redeploys automatically, and `php/contact.php` picks the
+   new transport up via `php/config.php`'s environment-variable mapping,
+   no code changes needed.
+
+Locally, the same thing can be done by uncommenting the `mail_transport`
+and `resend_api_key` lines in `php/config.local.php` (see
+`config.local.php.example`). Gmail SMTP is left as the default because it
+works out of the box for local dev; Resend is the one to switch to for the
+Render deployment specifically.
 
 ## Running it locally
 

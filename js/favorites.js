@@ -79,16 +79,16 @@
     card.className = 'fav-card';
     card.dataset.id = show.id;
     card.innerHTML = `
-      <button type="button" class="remove-btn" aria-label="Remove ${escapeHtml(show.name)} from your collection">&times;</button>
-      <img src="${img}" alt="Poster art for ${escapeHtml(show.name)}" loading="lazy" onerror="this.src='${FALLBACK_IMG}'">
+      <div class="fav-card-media">
+        <img src="${img}" alt="Poster art for ${escapeHtml(show.name)}" loading="lazy" onerror="this.src='${FALLBACK_IMG}'">
+        <span class="fav-badge" aria-hidden="true">${rating ? '★' + rating : year}</span>
+        <button type="button" class="remove-btn" aria-label="Remove ${escapeHtml(show.name)} from your collection">&times;</button>
+      </div>
       <div class="fav-card-body">
         <h4>${escapeHtml(show.name)}</h4>
-        <p>${escapeHtml(summary)}${summary.length === 110 ? '…' : ''}</p>
-        <div class="badge-row">
-          ${rating ? `<span class="badge rating">★ ${rating}</span>` : ''}
-          <span class="badge">${year}</span>
-          ${genres.map((g) => `<span class="badge">${escapeHtml(g)}</span>`).join('')}
-        </div>
+        <p>${escapeHtml(summary)}${summary.length === 110 ? '…' : ''}
+          <span class="fav-meta">${year}${genres.length ? ' · ' + genres.map(escapeHtml).join(' · ') : ''}</span>
+        </p>
       </div>`;
 
     card.querySelector('.remove-btn').addEventListener('click', () => {

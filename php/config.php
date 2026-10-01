@@ -35,6 +35,14 @@ $config = [
     // Windows/Mac setups have no mail server, so nothing will actually send).
     'use_smtp'         => true,
 
+    // Which transport actually sends the mail: 'smtp' (Gmail via PHPMailer,
+    // above) or 'resend' (the Resend HTTP API). Render's free tier blocks
+    // outbound SMTP ports (25/465/587), so 'smtp' silently times out there —
+    // 'resend' sends over plain HTTPS (443) instead, which isn't blocked.
+    // Only takes effect once resend_api_key below is also set.
+    'mail_transport'   => 'smtp',
+    'resend_api_key'   => '',
+
     'submissions_file' => __DIR__ . '/../data/submissions.json',
     'log_file'         => __DIR__ . '/../data/contact-errors.log',
 ];
@@ -57,6 +65,8 @@ $envMap = [
     'smtp_password' => 'SMTP_PASSWORD',
     'smtp_host'     => 'SMTP_HOST',
     'smtp_port'     => 'SMTP_PORT',
+    'mail_transport' => 'MAIL_TRANSPORT',
+    'resend_api_key' => 'RESEND_API_KEY',
 ];
 foreach ($envMap as $key => $envName) {
     $value = getenv($envName);
