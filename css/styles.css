@@ -131,6 +131,8 @@ textarea:focus-visible {
 /* The contact form's SUBMIT button: exact size/color/radius from the file
    (242 x 49, #CC9601, radius 5, Inter 500 16px, all-caps). */
 .btn-submit {
+  display: block;
+  margin-inline-start: auto;
   background: var(--color-primary);
   color: #fff;
   width: 242px;
@@ -190,12 +192,6 @@ textarea:focus-visible {
   align-items: center;
   gap: 12px;
   position: relative;
-  /* On mobile/tablet .main-nav is pulled out of flow (position: fixed for
-     the off-canvas drawer), so its own margin-inline-start:auto can't push
-     this toward the right edge there — give header-actions the same auto
-     margin so the hamburger still lands flush right next to the logo's far
-     left, independent of whatever .main-nav is doing at a given breakpoint. */
-  margin-inline-start: auto;
   z-index: 96; /* must stay above .main-nav (95) so the hamburger stays clickable while the drawer is open */
 }
 
@@ -251,6 +247,15 @@ textarea:focus-visible {
 
 /* Mobile / tablet nav: off-canvas drawer driven by the hamburger */
 @media (max-width: 899px) {
+  /* .main-nav is pulled out of flow here (position: fixed, for the
+     off-canvas drawer), so its own margin-inline-start:auto (see the base
+     .main-nav rule) can't push anything toward the right edge at this
+     breakpoint — give header-actions that job instead, scoped to just this
+     breakpoint so it doesn't also compete with nav's own auto margin once
+     nav is back in normal flow at 900px+ (that competition was splitting
+     the free space between the two, leaving nav short of the true right
+     edge on desktop). */
+  .header-actions { margin-inline-start: auto; }
   .main-nav {
     position: fixed;
     top: 0;
@@ -270,7 +275,10 @@ textarea:focus-visible {
   .main-nav a { font-size: 1.15rem; }
 }
 @media (min-width: 900px) {
-  .hamburger { display: none; }
+  /* Remove the whole wrapper, not just the button inside it — an empty
+     flex item still reserves header-inner's gap next to it, which left nav
+     a few pixels short of the true right edge that .footer-follow etc. use. */
+  .header-actions { display: none; }
 }
 
 /* ---------- hero ----------
