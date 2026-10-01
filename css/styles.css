@@ -165,6 +165,7 @@ textarea:focus-visible {
 }
 .main-nav a {
   text-decoration: none;
+  text-transform: uppercase;
   font-family: var(--font-ui);
   font-weight: 500;
   font-size: 16px;
@@ -304,8 +305,8 @@ textarea:focus-visible {
    66px vertical padding — single column, left aligned, no card/stat grid
    (the file doesn't have one). */
 .intro { padding: 66px 0; background: var(--color-bg); }
-.intro-inner { max-width: 760px; }
-.intro h1 { font-size: clamp(2rem, 4.2vw, 54.86px); margin-bottom: .45em; }
+.intro-inner { max-width: 760px; margin-inline: 0; }
+.intro h1 { font-size: clamp(2rem, 4.2vw, 54.86px); margin-bottom: .45em; text-transform: uppercase; }
 .intro p {
   font-family: var(--font-body);
   font-size: clamp(1rem, 1.6vw, 20.57px);

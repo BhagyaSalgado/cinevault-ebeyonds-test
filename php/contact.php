@@ -55,6 +55,7 @@ $fields = [
     'phone'     => trim((string)($_POST['phone']     ?? '')),
     'comments'  => trim((string)($_POST['comments']  ?? '')),
 ];
+$termsAccepted = isset($_POST['terms']) && $_POST['terms'] === 'on';
 
 // ---- Validation -----------------------------------------------------------
 $errors = [];
@@ -82,9 +83,13 @@ if ($fields['phone'] !== '' && !preg_match('/^[0-9+()\-.\s]{6,20}$/', $fields['p
 }
 
 if ($fields['comments'] === '') {
-    $errors['comments'] = 'Comments are required.';
+    $errors['comments'] = 'Message is required.';
 } elseif (mb_strlen($fields['comments']) > 4000) {
-    $errors['comments'] = 'Comments are too long (max 4000 characters).';
+    $errors['comments'] = 'Message is too long (max 4000 characters).';
+}
+
+if (!$termsAccepted) {
+    $errors['terms'] = 'You must agree to the Terms & Conditions.';
 }
 
 if (!empty($errors)) {
@@ -105,6 +110,7 @@ $submission = [
     'email'     => $clean['email'],
     'phone'     => $clean['phone'],
     'comments'  => $clean['comments'],
+    'termsAccepted' => true,
     'submittedAt' => date('c'),
 ];
 

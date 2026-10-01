@@ -10,11 +10,12 @@
   if (!form || !status || !submitBtn) return;
 
   const rules = {
-    firstName: { required: true, label: 'First name' },
-    lastName: { required: true, label: 'Last name' },
+    firstName: { required: true, label: 'First Name' },
+    lastName: { required: true, label: 'Last Name' },
     email: { required: true, label: 'Email', pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/ },
-    phone: { required: false, label: 'Phone number', pattern: /^[0-9+()\-.\s]{6,20}$/ },
-    comments: { required: true, label: 'Comments' }
+    phone: { required: false, label: 'Telephone', pattern: /^[0-9+()\-.\s]{6,20}$/ },
+    comments: { required: true, label: 'Message' },
+    terms: { required: true, label: 'Terms & Conditions', checkbox: true }
   };
 
   function fieldEl(name) { return form.elements[name]; }
@@ -24,14 +25,20 @@
     const el = fieldEl(name);
     const rule = rules[name];
     const err = errorEl(name);
-    const value = el.value.trim();
     el.dataset.touched = 'true';
 
     let message = '';
-    if (rule.required && !value) {
-      message = `${rule.label} is required.`;
-    } else if (value && rule.pattern && !rule.pattern.test(value)) {
-      message = `Please enter a valid ${rule.label.toLowerCase()}.`;
+    if (rule.checkbox) {
+      if (rule.required && !el.checked) {
+        message = `You must agree to the ${rule.label} to continue.`;
+      }
+    } else {
+      const value = el.value.trim();
+      if (rule.required && !value) {
+        message = `${rule.label} is required.`;
+      } else if (value && rule.pattern && !rule.pattern.test(value)) {
+        message = `Please enter a valid ${rule.label.toLowerCase()}.`;
+      }
     }
 
     err.textContent = message;
