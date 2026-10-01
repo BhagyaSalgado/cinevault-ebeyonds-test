@@ -67,24 +67,51 @@
   }
 
   if (sections.length && 'IntersectionObserver' in window) {
-    let current = sections[0].id;
+    const homeId = sections[0].id;
+    let current = homeId;
     setActive(current);
+
+    // Keep each section's latest ratio around rather than only looking at
+    // whichever entries happened to be in the most recent callback batch —
+    // a fast/smooth jump between sections can otherwise leave the highlight
+    // stuck on a section it only passed through on the way to its target.
+    const ratios = new Map(sections.map((el) => [el.id, 0]));
+
+    function pickCurrent() {
+      let best = null;
+      ratios.forEach((ratio, id) => {
+        if (ratio > 0 && (!best || ratio > best.ratio)) best = { id, ratio };
+      });
+      if (best && best.id !== current) {
+        current = best.id;
+        setActive(current);
+      }
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        // Pick the most visible intersecting section rather than just the
-        // first one, so fast scrolling past a short section doesn't stick.
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) {
-          current = visible.target.id;
-          setActive(current);
-        }
+        entries.forEach((e) => {
+          ratios.set(e.target.id, e.isIntersecting ? e.intersectionRatio : 0);
+        });
+        pickCurrent();
       },
       { rootMargin: '-40% 0px -50% 0px', threshold: [0, .25, .5, .75, 1] }
     );
     sections.forEach((el) => observer.observe(el));
+
+    // Hard guarantee: being scrolled all the way to the top always means
+    // "Home" is current, regardless of anything the observer's band thinks
+    // (layout shifts from async content, rounding, etc. shouldn't matter).
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (window.scrollY < 2 && current !== homeId) {
+          current = homeId;
+          setActive(current);
+        }
+      },
+      { passive: true }
+    );
   } else if (sections.length) {
     setActive(sections[0].id);
   }
