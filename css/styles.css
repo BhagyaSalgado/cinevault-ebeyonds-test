@@ -190,6 +190,12 @@ textarea:focus-visible {
   align-items: center;
   gap: 12px;
   position: relative;
+  /* On mobile/tablet .main-nav is pulled out of flow (position: fixed for
+     the off-canvas drawer), so its own margin-inline-start:auto can't push
+     this toward the right edge there — give header-actions the same auto
+     margin so the hamburger still lands flush right next to the logo's far
+     left, independent of whatever .main-nav is doing at a given breakpoint. */
+  margin-inline-start: auto;
   z-index: 96; /* must stay above .main-nav (95) so the hamburger stays clickable while the drawer is open */
 }
 
@@ -708,6 +714,15 @@ html[dir="rtl"] .search-bar input { padding: 0 42px 0 16px; }
   font-size: .78rem;
   margin: 0;
 }
+/* Groups copyright + the RTL toggle as one left-hand cluster, so the bottom
+   bar is a clean two-position left/right split — same pattern as the
+   footer-grid row above it (brand left, "Follow us on" right) — instead of
+   three items spread edge-to-edge-and-middle. */
+.footer-bottom-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
 .footer-credit a { color: inherit; text-decoration: underline; }
 .footer-credit a:hover { color: var(--color-text); }
 
@@ -736,6 +751,21 @@ html[dir="rtl"] .search-bar input { padding: 0 42px 0 16px; }
     text-align: center;
     gap: 12px;
   }
+  .footer-bottom-left { flex-direction: column; gap: 12px; }
+}
+
+/* Tablet: footer-grid (brand/follow) stays as the desktop two-column row,
+   but the bottom bar (copyright / RTL toggle / photo credit) center-stacks
+   instead of spreading edge-to-edge. The left/right space-between spread
+   is desktop-only (see the base .footer-bottom rule above, min-width:900px
+   and up effectively, since mobile and tablet both override it here). */
+@media (min-width: 641px) and (max-width: 899px) {
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  .footer-bottom-left { flex-direction: column; gap: 12px; }
 }
 
 /* ---------- scroll reveal ---------- */
