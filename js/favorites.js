@@ -12,13 +12,6 @@
   let debounceTimer = null;
   let activeController = null;
 
-  // The three "default" favorites shown on page load — real TVMaze show ids
-  // for well-known titles, fetched live just like a search result so the
-  // poster art/description always comes straight from the API (no bundled
-  // copyrighted images). Swap these ids for any other TVMaze show to change
-  // the defaults: look the id up via https://api.tvmaze.com/singlesearch/shows?q=<title>
-  const DEFAULT_SHOW_IDS = [169, 2993, 82]; // Breaking Bad, Stranger Things, Game of Thrones
-
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, (c) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -80,9 +73,9 @@
     card.dataset.id = show.id;
     card.innerHTML = `
       <div class="fav-card-media">
-        <img src="${img}" alt="Poster art for ${escapeHtml(show.name)}" loading="lazy" onerror="this.src='${FALLBACK_IMG}'">
-        <span class="fav-badge" aria-hidden="true">${rating ? '★' + rating : year}</span>
-        <button type="button" class="remove-btn" aria-label="Remove ${escapeHtml(show.name)} from your collection">&times;</button>
+        <img src="${img}" alt="Poster art for ${escapeHtml(show.name)}" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+        <span class="fav-badge" aria-hidden="true">${rating ? '★ ' + rating : year}</span>
+        <button type="button" class="remove-btn" aria-label="Remove ${escapeHtml(show.name)} from your collection"></button>
       </div>
       <div class="fav-card-body">
         <h4>${escapeHtml(show.name)}</h4>
@@ -90,18 +83,25 @@
           <span class="fav-meta">${year}${genres.length ? ' · ' + genres.map(escapeHtml).join(' · ') : ''}</span>
         </p>
       </div>`;
-
-    card.querySelector('.remove-btn').addEventListener('click', () => {
-      addedIds.delete(show.id);
-      card.classList.add('is-leaving');
-      card.addEventListener('transitionend', () => card.remove(), { once: true });
-      // Re-enable the matching "Add" button if it's still in the results list.
-      const staleBtn = resultsWrap.querySelector(`[data-action="add"][data-id="${show.id}"]`);
-      if (staleBtn) { staleBtn.disabled = false; staleBtn.textContent = 'Add'; }
-    });
-
     return card;
   }
+
+  // One delegated handler covers the three static cards and any added later.
+  grid.addEventListener('click', (e) => {
+    const btn = e.target.closest('.remove-btn');
+    if (!btn) return;
+    const card = btn.closest('.fav-card');
+    if (!card) return;
+    const id = card.dataset.id;
+    if (id) {
+      addedIds.delete(Number(id));
+      const staleBtn = resultsWrap.querySelector(`[data-action="add"][data-id="${id}"]`);
+      if (staleBtn) { staleBtn.disabled = false; staleBtn.textContent = 'Add'; }
+    }
+    card.classList.add('is-leaving');
+    card.addEventListener('transitionend', () => card.remove(), { once: true });
+    window.setTimeout(() => card.remove(), 400); // fallback if no transition fires (reduced motion)
+  });
 
   async function runSearch(query) {
     if (!query.trim()) {
@@ -117,39 +117,6 @@
       resultsWrap.innerHTML = '<p class="search-status">Couldn’t reach TVMaze right now. Please try again.</p>';
     }
   }
-
-  async function loadDefaultFavorites() {
-    const status = document.createElement('p');
-    status.className = 'search-status';
-    status.id = 'defaultsStatus';
-    status.textContent = 'Loading your collection…';
-    grid.appendChild(status);
-
-    const results = await Promise.allSettled(
-      DEFAULT_SHOW_IDS.map((id) => fetch(`https://api.tvmaze.com/shows/${id}`).then((res) => {
-        if (!res.ok) throw new Error(`TVMaze responded ${res.status}`);
-        return res.json();
-      }))
-    );
-
-    status.remove();
-    results.forEach((result) => {
-      if (result.status !== 'fulfilled') return; // skip any show that failed to load, rather than breaking the whole grid
-      const show = result.value;
-      if (addedIds.has(show.id)) return;
-      addedIds.add(show.id);
-      grid.appendChild(buildCard(show));
-    });
-
-    if (results.every((r) => r.status === 'rejected')) {
-      const failed = document.createElement('p');
-      failed.className = 'search-status';
-      failed.textContent = 'Couldn’t load the default collection — check your connection and refresh.';
-      grid.appendChild(failed);
-    }
-  }
-
-  loadDefaultFavorites();
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
