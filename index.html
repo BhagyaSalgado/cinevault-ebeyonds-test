@@ -7,9 +7,8 @@
 <meta name="description" content="CineVault lets you search TV shows and movies, build a personal favorites grid, and get in touch with the eBEYONDS team.">
 <meta name="author" content="Bhagya Salgado">
 <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Open+Sans:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/barlow-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/open-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -18,29 +17,43 @@
 
 <!-- ===================== HEADER ===================== -->
 <header class="site-header" id="top">
-  <div class="container header-inner">
+  <div class="header-inner">
     <a href="#top" class="logo" aria-label="CineVault home">
-      <img src="assets/img/logo.svg" alt="" width="140" height="32">
+      <svg class="logo-icon" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
+        <circle cx="20" cy="20" r="17" fill="none" stroke="#ffffff" stroke-width="2.2"/>
+        <path d="M16 12.5 L31 20 L16 27.5 Z" fill="#cc9601"/>
+      </svg>
+      <span class="logo-text">Cine<span>Vault</span></span>
     </a>
 
-    <nav class="main-nav" id="main-nav" aria-label="Primary">
-      <ul>
-        <li><a href="#home">Home</a></li>
-        <li><a href="#favorites">Our Screens</a></li>
-        <li><a href="#favorites">Schedule</a></li>
-        <li><a href="#about">Movie Library</a></li>
-        <li><a href="#contact">Location &amp; Contact</a></li>
-      </ul>
-    </nav>
+    <div class="header-right">
+      <nav class="main-nav" id="main-nav" aria-label="Primary">
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#favorites">Our Screens</a></li>
+          <li><a href="#favorites">Schedule</a></li>
+          <li><a href="#about">Movie Library</a></li>
+          <li class="nav-extra"><a href="#contact">Location &amp; Contact</a></li>
+        </ul>
+      </nav>
 
-    <div class="header-actions">
-      <button type="button" class="hamburger" id="hamburgerBtn" aria-expanded="false" aria-controls="main-nav" aria-label="Open menu">
+      <button type="button" class="hamburger" id="hamburgerBtn" aria-expanded="false" aria-controls="drawer" aria-label="Open menu">
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 </header>
 
+<!-- Off-canvas menu opened by the burger icon (every breakpoint) -->
+<nav class="drawer" id="drawer" aria-label="Menu">
+  <ul>
+    <li><a href="#home">Home</a></li>
+    <li><a href="#favorites">Our Screens</a></li>
+    <li><a href="#favorites">Schedule</a></li>
+    <li><a href="#about">Movie Library</a></li>
+    <li><a href="#contact">Location &amp; Contact</a></li>
+  </ul>
+</nav>
 <div class="nav-overlay" id="navOverlay" hidden></div>
 
 <main id="main-content">
@@ -48,108 +61,129 @@
   <!-- ===================== MAIN VISUAL ===================== -->
   <section class="hero" id="home" aria-roledescription="carousel" aria-label="Featured highlights">
     <div class="hero-slides" id="heroSlides">
-      <div class="hero-slide is-active" style="background-image:url('assets/img/hero-photo-1.jpg')"></div>
+      <div class="hero-slide is-active" style="background-image:url('assets/img/hero-photo-3.jpg')"></div>
+      <div class="hero-slide" style="background-image:url('assets/img/hero-photo-1.jpg')"></div>
       <div class="hero-slide" style="background-image:url('assets/img/hero-photo-2.jpg')"></div>
-      <div class="hero-slide" style="background-image:url('assets/img/hero-photo-3.jpg')"></div>
     </div>
     <div class="hero-dots" id="heroDots" role="tablist" aria-label="Slide picker"></div>
   </section>
 
   <!-- ===================== SITE INTRODUCTION ===================== -->
   <section class="intro" id="about" aria-labelledby="introTitle">
-    <div class="container">
-      <div class="intro-inner reveal">
-        <h1 id="introTitle">Movie Library</h1>
-        <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
-          tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
-      </div>
-    </div>
+    <h1 id="introTitle">Movie Library</h1>
+    <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr,<br class="br-wide"> sed diam nonumy eirmod tempor invidunt ut labore et<br class="br-wide"> dolore magna aliquyam erat, sed diam voluptua.</p>
   </section>
 
   <!-- ===================== COLLECT YOUR FAVORITES ===================== -->
   <section class="favorites" id="favorites" aria-labelledby="favoritesTitle">
-    <div class="container">
-      <div class="favorites-top reveal">
-        <h2 id="favoritesTitle">Collect your favourites</h2>
-        <form class="search-bar" id="searchForm" role="search">
-          <label for="movieSearch" class="visually-hidden">Search for a TV show or movie</label>
-          <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <input type="search" id="movieSearch" name="q" placeholder="Search title and add to grid" autocomplete="off">
-          <button type="submit" class="visually-hidden">Search</button>
-        </form>
-      </div>
+    <div class="favorites-top reveal">
+      <h2 id="favoritesTitle">Collect your favourites</h2>
+      <form class="search-bar" id="searchForm" role="search">
+        <label for="movieSearch" class="visually-hidden">Search for a TV show or movie</label>
+        <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="15.2" y1="15.2" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input type="search" id="movieSearch" name="q" placeholder="Search title and add to grid" autocomplete="off">
+        <button type="submit" class="visually-hidden">Search</button>
+      </form>
+    </div>
 
-      <hr class="section-divider">
+    <hr class="section-divider">
 
-      <div class="search-results" id="searchResults" aria-live="polite"></div>
+    <div class="search-results" id="searchResults" aria-live="polite"></div>
 
-      <h3 class="grid-subheading reveal">Your collection</h3>
-      <div class="favorites-grid" id="favoritesGrid">
-        <!-- Populated by js/favorites.js: 3 default shows fetched live from
-             TVMaze on page load (real poster art/description straight from
-             the API), plus anything the visitor adds via search. -->
-      </div>
+    <div class="favorites-grid reveal" id="favoritesGrid" aria-label="Your collection">
+      <!-- The three required static favourites. Anything the visitor adds via
+           search is appended after these by js/favorites.js (TVMaze API). -->
+      <article class="fav-card">
+        <div class="fav-card-media">
+          <img src="assets/img/posters/batman-returns.jpg" alt="Poster for Batman Returns" width="427" height="606" onerror="this.onerror=null;this.src='assets/img/poster-placeholder.svg'">
+          <button type="button" class="remove-btn" aria-label="Remove Batman Returns from your collection"></button>
+        </div>
+        <div class="fav-card-body">
+          <h4>Batman Returns</h4>
+          <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut…</p>
+        </div>
+      </article>
+
+      <article class="fav-card">
+        <div class="fav-card-media">
+          <img src="assets/img/posters/wild-wild-west.jpg" alt="Poster for Wild Wild West" width="427" height="606" onerror="this.onerror=null;this.src='assets/img/poster-placeholder.svg'">
+          <button type="button" class="remove-btn" aria-label="Remove Wild Wild West from your collection"></button>
+        </div>
+        <div class="fav-card-body">
+          <h4>Wild Wild West</h4>
+          <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut…</p>
+        </div>
+      </article>
+
+      <article class="fav-card">
+        <div class="fav-card-media">
+          <img src="assets/img/posters/the-amazing-spiderman.jpg" alt="Poster for The Amazing Spiderman" width="427" height="606" onerror="this.onerror=null;this.src='assets/img/poster-placeholder.svg'">
+          <button type="button" class="remove-btn" aria-label="Remove The Amazing Spiderman from your collection"></button>
+        </div>
+        <div class="fav-card-body">
+          <h4>The Amazing Spiderman</h4>
+          <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut…</p>
+        </div>
+      </article>
     </div>
   </section>
 
   <!-- ===================== CONTACT US ===================== -->
   <section class="contact" id="contact" aria-labelledby="contactTitle">
-    <div class="container contact-grid">
-      <div class="reveal contact-col">
-        <h2 id="contactTitle">How to reach us</h2>
-        <p class="contact-lede">Lorem ipsum dolor sit amet, consetetur.</p>
+    <div class="contact-head reveal">
+      <h2 id="contactTitle">How to reach us</h2>
+      <p class="contact-lede">Lorem ipsum dolor sit amet, consetetur.</p>
+    </div>
 
-        <form id="contactForm" class="contact-form" action="php/contact.php" method="POST" novalidate>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="firstName">First Name <span class="required">*</span></label>
-              <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
-              <span class="field-error" id="err-firstName"></span>
-            </div>
-            <div class="form-field">
-              <label for="lastName">Last Name <span class="required">*</span></label>
-              <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
-              <span class="field-error" id="err-lastName"></span>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="email">Email <span class="required">*</span></label>
-              <input type="email" id="email" name="email" required autocomplete="email">
-              <span class="field-error" id="err-email"></span>
-            </div>
-            <div class="form-field">
-              <label for="phone">Telephone</label>
-              <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="Optional">
-              <span class="field-error" id="err-phone"></span>
-            </div>
+    <div class="contact-grid reveal">
+      <form id="contactForm" class="contact-form" action="php/contact.php" method="POST" novalidate>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="firstName">First Name *</label>
+            <input type="text" id="firstName" name="firstName" required autocomplete="given-name">
+            <span class="field-error" id="err-firstName"></span>
           </div>
           <div class="form-field">
-            <label for="comments">Message <span class="required">*</span></label>
-            <textarea id="comments" name="comments" rows="5" required></textarea>
-            <span class="field-error" id="err-comments"></span>
+            <label for="lastName">Last Name *</label>
+            <input type="text" id="lastName" name="lastName" required autocomplete="family-name">
+            <span class="field-error" id="err-lastName"></span>
           </div>
+        </div>
+        <div class="form-field">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required autocomplete="email">
+          <span class="field-error" id="err-email"></span>
+        </div>
+        <div class="form-field">
+          <label for="phone">Telephone</label>
+          <input type="tel" id="phone" name="phone" autocomplete="tel">
+          <span class="field-error" id="err-phone"></span>
+        </div>
+        <div class="form-field form-field-message">
+          <label for="comments">Message</label>
+          <textarea id="comments" name="comments" rows="5" required></textarea>
+          <span class="field-error" id="err-comments"></span>
+        </div>
 
-          <!-- Honeypot field for basic spam protection; kept empty and hidden from real users -->
-          <div class="honeypot" aria-hidden="true">
-            <label for="website">Website</label>
-            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-          </div>
+        <!-- Honeypot field for basic spam protection; kept empty and hidden from real users -->
+        <div class="honeypot" aria-hidden="true">
+          <label for="website">Website</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+        </div>
 
-          <p class="form-note">*required fields</p>
+        <p class="form-note">*required fields</p>
 
-          <div class="form-terms">
-            <input type="checkbox" id="terms" name="terms" required>
-            <label for="terms">I agree to the <a href="#" target="_blank" rel="noopener">Terms &amp; Conditions</a></label>
-            <span class="field-error" id="err-terms"></span>
-          </div>
+        <div class="form-terms">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms">I agree to the <a href="#" target="_blank" rel="noopener">Terms &amp; Conditions</a></label>
+          <span class="field-error" id="err-terms"></span>
+        </div>
 
-          <button type="submit" class="btn btn-submit" id="contactSubmit">Submit</button>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        </form>
-      </div>
+        <button type="submit" class="btn btn-submit" id="contactSubmit">Submit</button>
+        <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+      </form>
 
-      <div class="map-wrap reveal">
+      <div class="map-wrap">
         <iframe
           title="eBEYONDS location on Google Maps"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.3812075643614!2d79.9404323!3d6.844821199999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae25069caa2f53b%3A0xe7eae3a8b1f1214d!2seBEYONDS%20eBusiness%20%26%20Digital%20Solutions!5e0!3m2!1sen!2slk!4v1790866616492!5m2!1sen!2slk"
@@ -165,39 +199,30 @@
 
 <!-- ===================== FOOTER ===================== -->
 <footer class="site-footer">
-  <div class="container footer-grid">
+  <div class="footer-top">
+    <address class="footer-brand">
+      <strong>IT Group</strong>
+      370, Level 4, High Level Road<br>
+      Pannipitiya<br>
+      Sri Lanka
+    </address>
 
-    <div class="footer-col footer-brand">
-      <p class="footer-brand-name">IT Group</p>
-      <address>
-        370, Level 4, High Level Road<br>
-        Pannipitiya<br>
-        Sri Lanka
-      </address>
-    </div>
-
-    <div class="footer-col footer-follow">
+    <div class="footer-follow">
       <p class="footer-follow-label">Follow us on</p>
-      <div class="footer-social" aria-label="Social links">
+      <div class="footer-social">
         <a href="#" aria-label="Twitter">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.52 8.52 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
+          <svg viewBox="0 0 24 24" width="29" height="24" fill="currentColor" aria-hidden="true"><path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.52 8.52 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg>
         </a>
         <a href="#" aria-label="YouTube">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a2.98 2.98 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A2.98 2.98 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 2.98 2.98 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a2.98 2.98 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
+          <svg viewBox="0 0 24 24" width="31" height="22" fill="currentColor" aria-hidden="true"><path d="M23.5 6.2a2.98 2.98 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A2.98 2.98 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 2.98 2.98 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a2.98 2.98 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8zM9.6 15.5v-7l6.2 3.5-6.2 3.5z"/></svg>
         </a>
       </div>
     </div>
-
   </div>
 
-  <div class="container footer-bottom">
-    <div class="footer-bottom-left">
-      <p class="footer-copy">Copyright &copy; <span id="year"></span> IT Hotels. All rights reserved.</p>
-      <button type="button" id="rtlToggle" class="rtl-toggle" aria-pressed="false">RTL Preview</button>
-    </div>
-    <p class="footer-credit">Photos by Felix Mooneeram &amp;
-      <a href="https://unsplash.com" target="_blank" rel="noopener">Serge Kutuzov</a> on
-      <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>
+  <div class="footer-bottom">
+    <p class="footer-copy">Copyright &copy; 2022 IT Hotels. All rights reserved.</p>
+    <p class="footer-credit">Photos by <a href="https://unsplash.com" target="_blank" rel="noopener">Felix Mooneeram</a><br class="br-narrow"> &amp; <a href="https://unsplash.com" target="_blank" rel="noopener">Serge Kutuzov</a> on <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a></p>
   </div>
 </footer>
 
@@ -207,6 +232,5 @@
 <script src="js/favorites.js" defer></script>
 <script src="js/contact-form.js" defer></script>
 <script src="js/rtl-toggle.js" defer></script>
-<script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
 </html>
