@@ -7,43 +7,43 @@ A responsive HTML5/CSS/JS site with a live TV/movie search (TVMaze API) and a
 small PHP backend for the contact form, built against the brief in
 *Test instructions – advance.pdf*.
 
-## A note on the Figma design
+## Matching the Figma design
 
-The evaluation links to a private Figma file (`figma.com/file/6FDTiXOX7dvEmhk9dCJyym`).
-Dev Mode access was later granted, and the layout, colors, type scale and
-spacing below were rebuilt to match that file exactly, inspected node by
-node:
+The layout was audited against the three Figma frames (desktop 1560 / tablet
+820 / mobile 390) node by node. Rendered element positions were measured in
+Chromium and compared with the Figma coordinates: section boundaries, card
+sizes (427x606 poster + 164px body on desktop, 349 / 322 wide on tablet /
+mobile), form fields (46px, radius 5), the 242x49 submit button, the
+773x588 map and the 237px footer all land within about 1px of the file at each
+of the three widths, and the page heights match (3184 / 4428 / ~5076px).
 
-- **Colors** — `#0F0F0F` (header / hero caption), `#1D1D1D` (favorites
-  section), `#3C3C3C` (card body / form fields), `#CC9601` (the file's one
-  accent color, used for every button), plus its exact text greys
-  (`#B7B7B7`, `#878787`, `#EAEAEA`). All defined as CSS variables at the top
-  of `css/styles.css`.
-- **Type** — the file's scale (54.86px / 36.57px / 32px / 20.57px / 18.29px /
-  16px, all at 150% line-height and ‑1.1% letter-spacing) using Oswald +
-  Open Sans + Inter. The file itself uses **DIN Alternate** for headings,
-  which isn't freely licensable for the web, so Oswald (a similarly
-  condensed, bold grotesque) stands in for it — swap the `--font-heading`
-  variable if a licensed copy of DIN Alternate is available.
-- **Layout** — the header's 115px side padding and 78px height, the
-  favourites section's heading+search row, the 427:606 poster cards with
-  their circular rating badge and `#3C3C3C` body panel, the hairline-bordered
-  contact form and its exact `242×49` gold submit button, and the footer's
-  actual two-part structure (address + social row, then a copyright bar)
-  all match the file's Dev Mode measurements.
-- **Imagery** — the file's own raster images (stock cinema photo, movie
-  poster art) aren't reproduced here: the poster art is intentionally real,
-  live TVMaze artwork rather than the file's copyrighted movie posters
-  (Batman, Spider-Man, etc.), and the hero banner slideshow uses real
-  cinema-seat photos (`assets/img/hero-photo-1.jpg` through `-3.jpg`),
-  credited in the footer ("Photos by Felix Mooneeram & Serge Kutuzov on
-  Unsplash"). `scripts/gen_assets.py` can still regenerate the earlier
-  procedurally-generated placeholder art (`hero-1.svg`–`hero-3.svg`,
-  `fav-*.svg`, `logo.svg`) if real photos aren't available.
+- **Colours** — `#0F0F0F` header + intro, `#000` canvas + contact, `#1D1D1D`
+  favourites + footer, `#3C3C3C` card body + fields, `#CC9601` accent,
+  text greys `#B7B7B7` / `#A3A3A3` / `#EAEAEA`. CSS variables in `css/styles.css`.
+- **Type** — the file's scale (54.86 / 36.57 / 32 / 20.57 / 18.29 / 16px, 150%
+  line-height, -1.1% tracking). Fonts are self-hosted in `assets/fonts/`.
+  The file uses **DIN Alternate** for headings, which is commercial, so
+  **Barlow** (the closest open-licence DIN-style face, measured within
+  ~3% of DIN's text widths) stands in — change `--font-heading` if you have a licence.
+- **Banner** — the first slide is the same red-seat photo as the file, cropped
+  exactly as the file crops it on each breakpoint.
+- **Header** — burger icon is shown at every breakpoint like the file (it opens
+  a drawer); the inline menu drops "Location & Contact" on tablet and the
+  whole menu on mobile, as in the file.
 
-A small addition beyond the Figma file: a **RTL Preview** toggle in the
-footer bottom bar (the file has no such control) demonstrates the
-layout's RTL support without changing anything in the matched design.
+### Things you need to supply / deliberate deviations
+
+- **Poster images** — the three card posters (Batman Returns, Wild Wild West,
+  The Amazing Spiderman) are in `assets/img/posters/`, pre-cropped to
+  854x1212 (2x of the 427x606 card art). A neutral placeholder is used only if
+  a file fails to load.
+- **Footer address and map** point at the eBEYONDS office (Pannipitiya),
+  not the Madrid placeholder shown in the file.
+- **Copyright line** reads "IT Hotels" (the desktop frame has a "Hote ls" typo).
+- **RTL preview** has no visible control (the file has none): open
+  `index.html?dir=rtl`.
+- The slideshow's extra slides and dots are an optional feature; the dots only
+  appear on hover/focus.
 
 ## What's implemented
 
@@ -56,18 +56,24 @@ layout's RTL support without changing anything in the matched design.
 - Live search against the [TVMaze API](https://www.tvmaze.com/api) (no key
   needed, CORS-friendly) — chosen over TMDB since TMDB requires an API key
 - Search input, "Add to grid", and "Remove from grid" for search results
-- Three required static favorite items, plus dynamically added API results
+- Three required static favourite cards, plus dynamically added API results (with rating / year / genre)
 
 **Optional requirements implemented**
 - Creative use of fetched data: star rating, premiere year and genre badges
   on each added card, plus a truncated synopsis
 - CSS-only scroll-reveal animations (IntersectionObserver + transitions, no
   extra library) and an auto-rotating hero slideshow
-- RTL support: click "RTL Preview" in the header to flip `<html dir>` — the
-  whole layout mirrors correctly because the stylesheet uses CSS logical
-  properties (`margin-inline`, `inset-inline-start`, etc.) throughout
+- RTL support: open `?dir=rtl` to flip `<html dir>` — the whole layout
+  mirrors correctly because the stylesheet uses CSS logical properties
+  (`margin-inline`, `padding-inline`, `inset-inline-*`) throughout
 - Accessibility: skip link, visible focus states, `aria-*` wiring on the
   menu/search/form, labelled fields, `prefers-reduced-motion` support
+
+**Not implemented (by design, to stay inside the time budget)**
+- Vue.js — the brief marks this optional; vanilla JS keeps the evaluation
+  dependency-free and easy to read
+- Full WCAG AA audit — the accessibility basics above are in place, but a
+  full AA pass (contrast audit tooling, screen-reader pass) wasn't run
 
 **Backend**
 - `php/contact.php` re-validates every field server-side, stores each
@@ -173,12 +179,12 @@ resets on restart/redeploy — email sending still works fine either way.
 index.html
 css/styles.css
 js/
-  nav.js              — hamburger drawer (open/close, focus, Escape, overlay)
+  nav.js              — burger drawer (open/close, focus, Escape, overlay) + scrollspy
   hero-slider.js       — main-visual slideshow
   reveal-animations.js — scroll-in animations
   favorites.js         — TVMaze search, add/remove grid logic
   contact-form.js      — client-side validation + AJAX submit
-  rtl-toggle.js         — flips <html dir> for the RTL preview
+  rtl-toggle.js         — applies ?dir=rtl for the RTL preview
 php/
   config.php              — site settings; merges in config.local.php if present
   config.local.php.example — copy to config.local.php and fill in your Gmail + App Password
@@ -187,7 +193,8 @@ php/
 data/
   submissions.json — stored contact submissions (starts empty)
   .htaccess        — blocks direct access to the data folder
-assets/img/        — generated SVG logo, hero art, and poster placeholders
+assets/img/        — hero photos, logo/placeholder SVGs; posters/ for the Figma posters
+assets/fonts/      — self-hosted Barlow, Open Sans, Inter (woff2)
 scripts/gen_assets.py — regenerates the placeholder SVG artwork
 ```
 
